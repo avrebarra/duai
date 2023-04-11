@@ -156,9 +156,24 @@ export const ScreenFAQ: React.FC<PropsNone> = ({}) => {
     <>
       <Title title="faqs" />
 
-      <FAQItem q="Why I make this?" a="I just need to convert my prayers to Arabic so I can recite it within my salahs." />
+      <FAQItem
+        q="Why I make this?"
+        a="I just kinda want to translate my prayers to Arabic. But it seems ChatGPT is better at crafting dua with pretty-pretty Arabic words."
+      />
 
-      <FAQItem q="Who created this?" a="Aliens. Moslem aliens." />
+      <FAQItem
+        q="What is OpenAI API Key?"
+        a="OpenAI API key is a unique identifier that is required to access OpenAI's GPT models and other AI technologies. It allows developers and researchers to integrate OpenAI's advanced AI capabilities into their own applications and workflows."
+      />
+
+      <FAQItem q="How to get OpenAI API Key?" a="Go here https://platform.openai.com/account/api-keys (need to register first if you haven't)" />
+
+      <FAQItem
+        q="Should I use this?"
+        a="SUNNAH FIRST!! Find duas in shahih hadith first to preserve and gain the pahala of sunnahs. If then you can't find any told by Prophet Muhammad PBUH matching what you need, maybe you can use this."
+      />
+
+      <FAQItem q="Who created this?" a="Alien. Moslem alien." />
     </>
   );
 };
