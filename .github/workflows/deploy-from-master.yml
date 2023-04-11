@@ -1,0 +1,35 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: deploy from master
+
+on:
+  push:
+    branches: [ master ]
+
+env:
+  SHARP_INSTALL_FORCE: true
+  APP_BASE_PATH: duai/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '17'
+        cache: 'yarn'
+    - name: Install dependencies
+      run: yarn
+    - name: Install global deps (workbox-cli)
+      run: yarn global add workbox-cli
+    - name: Build app
+      run: make build
+    - name: Recreate gh-pages branch
+      run: git checkout -b gh-pages
+    - name: Promote build
+      run: mv dist /tmp/dist && ls | grep -v ".git" | xargs rm -r && mv /tmp/dist/* .
+    - name: Publish build
+      run: git config --global user.email "ci@github.com" && git config --global user.name "Github CI" && git add --all && git commit -m "updated build" && git push --set-upstream origin gh-pages --force
