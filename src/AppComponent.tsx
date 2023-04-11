@@ -8,11 +8,13 @@ import { useToast } from "@chakra-ui/react";
 const APP_NAME = "duai";
 const APP_DESCRIPTION = "Your wishes as Arabic duas. With AI.";
 const APP_ICON_SRC = "https://em-content.zobj.net/source/microsoft-teams/337/palms-up-together_medium-light-skin-tone_1f932-1f3fc_1f3fc.png";
+const LS_KEY_OPENAIKEY = "openapikey";
 
 type PropsNone = {};
 
 export const ScreenHome: React.FC<PropsNone> = ({}) => {
   const toast = useToast();
+
   const [tmpPrompt, setTmpPrompt] = React.useState<string>("");
   const [openAIKey, setOpenAIKey] = React.useState<string>("");
   const [showKey, setShowKey] = React.useState(false);
@@ -21,13 +23,18 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
   const [iteration, setIteration] = React.useState<number>(0);
   const [prayer, setPrayer] = React.useState<Prayer>({});
 
-  const handleClick = () => setShowKey(!showKey);
-  const reset = () => {
+  const handleClickShowKey = () => setShowKey(!showKey);
+  const handleAPIKeyUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    setOpenAIKey(value);
+    localStorage.setItem(LS_KEY_OPENAIKEY, value);
+  };
+  const handleClickReset = () => {
     setPrompt("");
     setIteration(0);
     setPrayer({});
   };
-  const handleFailure = (msg: string) => {
+  const handleDataFailure = (msg: string) => {
     toast({
       title: "Failure occured",
       description: msg,
@@ -36,10 +43,15 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
       position: "top",
       isClosable: true,
     });
-    reset();
+    handleClickReset();
   };
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    const openAPIKey = localStorage.getItem(LS_KEY_OPENAIKEY);
+    if (openAPIKey) {
+      setOpenAIKey(openAPIKey);
+    }
+  }, []);
 
   return (
     <>
@@ -55,28 +67,28 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
       <div id="craft-section">
         <GuardShow show={prayer.arabic == undefined}>
           <div className="pb-4">
-            <InputGroup size="md" className="my-1">
-              <Tooltip
-                label="No worries, we're not storing any key to server. Check out FAQs for more info."
-                aria-label="A tooltip"
-                hasArrow
-                placement="bottom-end"
-              >
+            <Tooltip
+              label="No worries, we're not storing things to any server. Check out FAQs for more info."
+              aria-label="A tooltip"
+              hasArrow
+              placement="bottom-end"
+            >
+              <InputGroup size="md" className="my-1">
                 <Input
                   className="font-mono"
                   borderRadius={0}
                   type={showKey ? "text" : "password"}
                   placeholder="OpenAI API Key"
                   value={openAIKey}
-                  onChange={(e) => setOpenAIKey(e.currentTarget.value)}
+                  onChange={handleAPIKeyUpdate}
                 />
-              </Tooltip>
-              <InputRightElement width="4.5rem">
-                <Button borderRadius={0} h="1.75rem" size="sm" onClick={handleClick}>
-                  {showKey ? "Hide" : "Show"}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
+                <InputRightElement width="4.5rem">
+                  <Button borderRadius={0} h="1.75rem" size="sm" onClick={handleClickShowKey}>
+                    {showKey ? "Hide" : "Show"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </Tooltip>
             <Textarea
               className="my-1"
               borderRadius={0}
@@ -136,7 +148,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
             size={"md"}
             borderRadius={0}
             onClick={() => {
-              reset();
+              handleClickReset();
             }}
           >
             Reset
@@ -153,7 +165,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
       </div>
 
       {/* data generator */}
-      <DataPrayerGenerator apikey={openAIKey} content={prompt} iteration={iteration} onDataLoaded={setPrayer} onFailure={handleFailure} />
+      <DataPrayerGenerator apikey={openAIKey} content={prompt} iteration={iteration} onDataLoaded={setPrayer} onFailure={handleDataFailure} />
     </>
   );
 };
@@ -182,12 +194,12 @@ export const ScreenFAQ: React.FC<PropsNone> = ({}) => {
 
       <FAQItem
         q="Will my key be safe?"
-        a="This static app made with React. It lives only in your browser without serverside data processing (except directly to OpenAI API). We can't see or store your key at all. You can validate it by peeking to the source code here https://github.com/avrebarra/duai"
+        a="The app is is using your key to make request to OpenAI, directly. We also cache your key in your browser's LocalStorage (clientside, not serverside) so you can continue between sessions without hassle. Other than that we don't use or access your key at all. You can validate this behavior by peeking directly to the source code here https://github.com/avrebarra/duai. At last, for safety measure we suggest you create new API key so you can always revoke your keys upon potential risks."
       />
 
       <FAQItem
         q="Is this halal?"
-        a="Should be okay, but sunnah comes first! Find duas in shahih hadith first to preserve sunnahs and gain the most pahalas. If then you can't find any duas previously told by Prophet Muhammad PBUH that's matching your need, maybe you can use this."
+        a="Should be okay, but sunnah comes first. Find duas in shahih hadith first to preserve sunnahs and gain the most pahalas. If then you can't find any duas previously told by Prophet Muhammad PBUH that's matching your need, maybe you can use this."
       />
 
       <FAQItem q="Who created this?" a="Alien. Moslem alien." />
