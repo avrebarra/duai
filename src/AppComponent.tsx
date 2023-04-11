@@ -6,7 +6,7 @@ import { Textarea, Input, Button, InputGroup, InputRightElement } from "@chakra-
 import { useToast } from "@chakra-ui/react";
 import { SpinnerIcon } from "@chakra-ui/icons";
 
-const APP_NAME = "lafazdiz";
+const APP_NAME = "duai";
 const APP_DESCRIPTION = "Convert your prayers to Arabic lafadz. With AI.";
 const APP_ICON_SRC = "https://em-content.zobj.net/source/microsoft-teams/337/palms-up-together_medium-light-skin-tone_1f932-1f3fc_1f3fc.png";
 

@@ -1,11 +1,11 @@
 {
-  "name": "lafazdiz",
+  "name": "duai",
   "version": "1.1.0",
-  "description": "Secrets as protected QRs",
-  "homepage": "https://avrebarra.github.io/lafazdiz/",
+  "description": "Convert dua to arabic with AI",
+  "homepage": "https://avrebarra.github.io/duai/",
   "source": "src/index.html",
   "pwaManifest": {
-    "shortName": "lafazdiz",
+    "shortName": "duai",
     "theme": "#FFFFFF",
     "generateIconOptions": {
       "baseIcon": "./public/icon.png",
@@ -18,7 +18,7 @@
     }
   },
   "scripts": {},
-  "repository": "github.com/avrebarra/lafazdiz",
+  "repository": "github.com/avrebarra/duai",
   "author": "Avreghly Barra <avreghly@gmail.com>",
   "license": "MIT",
   "private": false,
