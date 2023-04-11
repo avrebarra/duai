@@ -2,12 +2,11 @@ import * as React from "react";
 import { Configuration, OpenAIApi } from "openai";
 import { Link } from "react-router-dom";
 
-import { Textarea, Input, Button, InputGroup, InputRightElement } from "@chakra-ui/react";
+import { Textarea, Input, Tooltip, Button, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
-import { SpinnerIcon } from "@chakra-ui/icons";
 
 const APP_NAME = "duai";
-const APP_DESCRIPTION = "Convert your prayers to Arabic lafadz. With AI.";
+const APP_DESCRIPTION = "Your wishes as Arabic duas. With AI.";
 const APP_ICON_SRC = "https://em-content.zobj.net/source/microsoft-teams/337/palms-up-together_medium-light-skin-tone_1f932-1f3fc_1f3fc.png";
 
 type PropsNone = {};
@@ -46,7 +45,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
     <>
       <img className="w-16" src={APP_ICON_SRC} alt="" />
       <div className="pb-4">
-        <div className="font-bold text-4xl">
+        <div className="font-bold text-5xl">
           <Link className="" to={`/`}>
             {APP_NAME}{" "}
           </Link>
@@ -57,21 +56,34 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
         <GuardShow show={prayer.arabic == undefined}>
           <div className="pb-4">
             <InputGroup size="md" className="my-1">
-              <Input
-                className="font-mono"
-                borderRadius={0}
-                type={showKey ? "text" : "password"}
-                placeholder="OpenAI API Key"
-                value={openAIKey}
-                onChange={(e) => setOpenAIKey(e.currentTarget.value)}
-              />
+              <Tooltip
+                label="No worries, we're not storing any key to server. Check out FAQs for more info."
+                aria-label="A tooltip"
+                hasArrow
+                placement="bottom-end"
+              >
+                <Input
+                  className="font-mono"
+                  borderRadius={0}
+                  type={showKey ? "text" : "password"}
+                  placeholder="OpenAI API Key"
+                  value={openAIKey}
+                  onChange={(e) => setOpenAIKey(e.currentTarget.value)}
+                />
+              </Tooltip>
               <InputRightElement width="4.5rem">
                 <Button borderRadius={0} h="1.75rem" size="sm" onClick={handleClick}>
                   {showKey ? "Hide" : "Show"}
                 </Button>
               </InputRightElement>
             </InputGroup>
-            <Textarea className="my-1" borderRadius={0} placeholder="What you ask for?" onChange={(e) => setTmpPrompt(e.currentTarget.value)} />
+            <Textarea
+              className="my-1"
+              borderRadius={0}
+              placeholder="What you ask for?"
+              onChange={(e) => setTmpPrompt(e.currentTarget.value)}
+              value={tmpPrompt}
+            />
           </div>
         </GuardShow>
       </div>
@@ -95,7 +107,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
               setPrompt(tmpPrompt);
             }}
           >
-            Submit
+            Make Dua
           </Button>
         </GuardShow>
 
@@ -158,19 +170,24 @@ export const ScreenFAQ: React.FC<PropsNone> = ({}) => {
 
       <FAQItem
         q="Why I make this?"
-        a="I just kinda want to translate my prayers to Arabic. But it seems ChatGPT is better at crafting dua with pretty-pretty Arabic words."
+        a="I just kinda want to translate my prayers to Arabic. I used Google Translate at first but then it seems ChatGPT is better at writing it with pretty-pretty Arabic words."
       />
 
       <FAQItem
-        q="What is OpenAI API Key?"
+        q="What is OpenAI API key?"
         a="OpenAI API key is a unique identifier that is required to access OpenAI's GPT models and other AI technologies. It allows developers and researchers to integrate OpenAI's advanced AI capabilities into their own applications and workflows."
       />
 
-      <FAQItem q="How to get OpenAI API Key?" a="Go here https://platform.openai.com/account/api-keys (need to register first if you haven't)" />
+      <FAQItem q="How to get OpenAI API key?" a="Go here https://platform.openai.com/account/api-keys (need to register first if you haven't)" />
 
       <FAQItem
-        q="Should I use this?"
-        a="SUNNAH FIRST!! Find duas in shahih hadith first to preserve and gain the pahala of sunnahs. If then you can't find any told by Prophet Muhammad PBUH matching what you need, maybe you can use this."
+        q="Will my key be safe?"
+        a="This static app made with React. It lives only in your browser without serverside data processing (except directly to OpenAI API). We can't see or store your key at all. You can validate it by peeking to the source code here https://github.com/avrebarra/duai"
+      />
+
+      <FAQItem
+        q="Is this halal?"
+        a="Should be okay, but sunnah comes first! Find duas in shahih hadith first to preserve sunnahs and gain the most pahalas. If then you can't find any duas previously told by Prophet Muhammad PBUH that's matching your need, maybe you can use this."
       />
 
       <FAQItem q="Who created this?" a="Alien. Moslem alien." />
