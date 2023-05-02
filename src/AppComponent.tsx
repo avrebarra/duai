@@ -10,9 +10,15 @@ const APP_DESCRIPTION = "Your wishes as Arabic duas. With AI.";
 const APP_ICON_SRC = "https://em-content.zobj.net/source/microsoft-teams/337/palms-up-together_medium-light-skin-tone_1f932-1f3fc_1f3fc.png";
 const LS_KEY_OPENAIKEY = "openapikey";
 
+type Dua = {
+  arabic?: string;
+  pronounciation?: string;
+  translation?: string;
+};
+
 type PropsNone = {};
 
-export const ScreenHome: React.FC<PropsNone> = ({}) => {
+export const FCScreenHome: React.FC<PropsNone> = ({}) => {
   const toast = useToast();
 
   const [tmpPrompt, setTmpPrompt] = React.useState<string>("");
@@ -21,7 +27,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
 
   const [prompt, setPrompt] = React.useState<string>("");
   const [iteration, setIteration] = React.useState<number>(0);
-  const [prayer, setPrayer] = React.useState<Prayer>({});
+  const [prayer, setPrayer] = React.useState<Dua>({});
 
   const handleClickShowKey = () => setShowKey(!showKey);
   const handleAPIKeyUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +71,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
         <div className="pt-2 text-xl">{APP_DESCRIPTION}</div>
       </div>
       <div id="craft-section">
-        <GuardShow show={prayer.arabic == undefined}>
+        <FCGuardShow show={prayer.arabic == undefined}>
           <div className="pb-4">
             <Tooltip
               label="No worries, we're not storing things to any server. Check out FAQs for more info."
@@ -97,20 +103,20 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
               value={tmpPrompt}
             />
           </div>
-        </GuardShow>
+        </FCGuardShow>
       </div>
       <div id="dua-section">
-        <GuardShow show={prompt != "" && prayer.arabic != undefined}>
+        <FCGuardShow show={prompt != "" && prayer.arabic != undefined}>
           <div className="pt-4 pb-10">
             <div className="pb-2 font-serif font-medium text-2xl">{prayer.arabic}</div>
-            <div className="pb-4 text-xl font-light text-emerald-700">{prayer.spelling}</div>
-            <div className="">"{prayer.meaning}"</div>
+            <div className="pb-4 text-xl font-light text-emerald-700">{prayer.pronounciation}</div>
+            <div className="">"{prayer.translation}"</div>
           </div>
-        </GuardShow>
+        </FCGuardShow>
       </div>
       <div>
         {/* show when no prompt submitted */}
-        <GuardShow show={!prompt}>
+        <FCGuardShow show={!prompt}>
           <Button
             colorScheme="green"
             size={"md"}
@@ -121,17 +127,17 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
           >
             Make Dua
           </Button>
-        </GuardShow>
+        </FCGuardShow>
 
         {/* show when loading */}
-        <GuardShow show={prompt != "" && !prayer.arabic}>
+        <FCGuardShow show={prompt != "" && !prayer.arabic}>
           <Button colorScheme="green" size={"md"} borderRadius={0} isLoading={true}>
             Loading
           </Button>
-        </GuardShow>
+        </FCGuardShow>
 
         {/* show when prayer acquired */}
-        <GuardShow show={prompt != "" && prayer.arabic != undefined}>
+        <FCGuardShow show={prompt != "" && prayer.arabic != undefined}>
           <Button
             colorScheme="green"
             size={"md"}
@@ -141,7 +147,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
               setPrayer({});
             }}
           >
-            Give Another
+            Other Dua
           </Button>
           <Button
             colorScheme="yellow"
@@ -153,7 +159,7 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
           >
             Reset
           </Button>
-        </GuardShow>
+        </FCGuardShow>
 
         <span className="px-2">
           <Link to={`/faqs`}>
@@ -165,77 +171,85 @@ export const ScreenHome: React.FC<PropsNone> = ({}) => {
       </div>
 
       {/* data generator */}
-      <DataPrayerGenerator apikey={openAIKey} content={prompt} iteration={iteration} onDataLoaded={setPrayer} onFailure={handleDataFailure} />
+      <FCDataDuaGenerator apikey={openAIKey} content={prompt} iteration={iteration} onDataLoaded={setPrayer} onFailure={handleDataFailure} />
     </>
   );
 };
 
-export const ScreenFAQ: React.FC<PropsNone> = ({}) => {
-  const [readiness, setReadiness] = React.useState<boolean>(false);
-
-  // effects
+export const FCScreenFAQ: React.FC<PropsNone> = ({}) => {
   React.useEffect(() => {}, []);
-
   return (
     <>
-      <Title title="faqs" />
+      <FCTitle title="FAQs" />
 
-      <FAQItem
-        q="Why I make this?"
-        a="I just kinda want to translate my prayers to Arabic. I used Google Translate at first but then it seems ChatGPT is better at writing it with pretty-pretty Arabic words."
-      />
+      <FCFAQItem q="Why I make this?">
+        I just kinda want to translate my prayers to Arabic. I used Google Translate at first but then it seems ChatGPT is better at writing it with
+        pretty-pretty Arabic words.
+      </FCFAQItem>
 
-      <FAQItem
-        q="What is OpenAI API key?"
-        a="OpenAI API key is a unique identifier that is required to access OpenAI's GPT models and other AI technologies. It allows developers and researchers to integrate OpenAI's advanced AI capabilities into their own applications and workflows."
-      />
+      <FCFAQItem q="What is OpenAI API key?">
+        OpenAI API key is a unique identifier that is required to access OpenAI's GPT models and other AI technologies. It allows developers and
+        researchers to integrate OpenAI's advanced AI capabilities into their own applications and workflows.
+      </FCFAQItem>
 
-      <FAQItem q="How to get OpenAI API key?" a="Go here https://platform.openai.com/account/api-keys (need to register first if you haven't)" />
+      <FCFAQItem q="How to get OpenAI API key?">
+        Go{" "}
+        <u>
+          <a href="https://platform.openai.com/account/api-keys">here</a>
+        </u>
+        . (need to register first if you haven't)
+      </FCFAQItem>
 
-      <FAQItem
-        q="Will my key be safe?"
-        a="The app is is using your key to make request to OpenAI, directly. We also cache your key in your browser's LocalStorage (clientside, not serverside) so you can continue between sessions without hassle. Other than that we don't use or access your key at all. You can validate this behavior by peeking directly to the source code here https://github.com/avrebarra/duai. At last, for safety measure we suggest you create new API key so you can always revoke your keys upon potential risks."
-      />
+      <FCFAQItem q="Will my key be safe?">
+        The app is is using your key to make request to OpenAI, directly. We also cache your key in your browser's LocalStorage (clientside, not
+        serverside) so you can continue between sessions without hassle. <br />
+        <br />
+        Other than that we don't use or access your key at all. You can validate this behavior by peeking directly to the{" "}
+        <u>
+          <a href="https://github.com/avrebarra/duai">source code</a>
+        </u>
+        .
+        <br />
+        <br />
+        <strong>
+          At last, for safety measure we suggest you create different API keys for each different apps so you can always revoke your key upon
+          potential risks.
+        </strong>
+      </FCFAQItem>
 
-      <FAQItem
-        q="Is this halal?"
-        a="Should be okay, but sunnah comes first. Find duas in shahih hadith first to preserve sunnahs and gain the most pahalas. If then you can't find any duas previously told by Prophet Muhammad PBUH that's matching your need, maybe you can use this."
-      />
+      <FCFAQItem q="Is this halal?">
+        Should be okay, but sunnah comes first. Find duas in shahih hadith first to preserve sunnahs and gain the most pahalas. If then you can't find
+        any duas previously told by Prophet Muhammad PBUH that's matching your need, maybe you can use this.
+      </FCFAQItem>
 
-      <FAQItem q="Who created this?" a="Alien. Moslem alien." />
+      <FCFAQItem q="Who created this?">Alien. Moslem alien.</FCFAQItem>
     </>
   );
 };
 
 // ***
 
-type FAQItemProps = {
+type PropsFAQItem = {
   q: string;
-  a: string;
+  children: React.ReactNode;
 };
-export const FAQItem: React.FC<FAQItemProps> = (p) => {
-  const [readiness, setReadiness] = React.useState<boolean>(false);
-
-  React.useEffect(() => {}, [readiness]);
-
+export const FCFAQItem: React.FC<PropsFAQItem> = (p) => {
+  React.useEffect(() => {}, []);
   return (
     <>
       <div className="mb-5">
         <div className="text-lg font-bold mb-1">{p.q}</div>
-        <div className="text-normal max-w-md mb-2">{p.a}</div>
+        <div className="text-normal max-w-md mb-2">{p.children}</div>
       </div>
     </>
   );
 };
 
-type TitleProps = {
+type PropsTitle = {
   title: string;
 };
-export const Title: React.FC<TitleProps> = (p) => {
-  const [readiness, setReadiness] = React.useState<boolean>(false);
-
-  React.useEffect(() => {}, [readiness]);
-
+export const FCTitle: React.FC<PropsTitle> = (p) => {
+  React.useEffect(() => {}, []);
   return (
     <>
       <div className="text-4xl ">
@@ -249,31 +263,27 @@ export const Title: React.FC<TitleProps> = (p) => {
   );
 };
 
-type GuardShowProps = {
+type PropsGuardShow = {
   children: React.ReactNode;
   show: boolean;
 };
-export const GuardShow: React.FC<GuardShowProps> = (p) => {
+export const FCGuardShow: React.FC<PropsGuardShow> = (p) => {
   if (!p.show) return null;
   return <>{p.children}</>;
 };
 
-type Prayer = {
-  arabic?: string;
-  spelling?: string;
-  meaning?: string;
-};
-type DataPrayerGeneratorProps = {
+type PropsDataDuaGenerator = {
   apikey: string;
   content: string;
   iteration?: number;
-  onDataLoaded: (p: Prayer) => void;
+  onDataLoaded: (p: Dua) => void;
   onFailure: (msg: string) => void;
 };
-const DataPrayerGenerator: React.FC<DataPrayerGeneratorProps> = (p) => {
+const FCDataDuaGenerator: React.FC<PropsDataDuaGenerator> = (p) => {
   const [prompt, setPrompt] = React.useState<string>("");
-  const onDataLoaded = (s: string) => {
-    const prayer: Prayer = JSON.parse(s);
+
+  const handleDataLoaded = (s: string) => {
+    const prayer: Dua = JSON.parse(s);
     p.onDataLoaded(prayer);
   };
 
@@ -281,15 +291,14 @@ const DataPrayerGenerator: React.FC<DataPrayerGeneratorProps> = (p) => {
     if (!p.content) return;
 
     const newprompt = `
-Generate ONE Islamic prayer in Arabic (must be with harakats), spelling, and meaning to pray within Salah, and respond in exact JSON format:
+Generate ONE Islamic dua in 3 formats: Arabic (with harakats), English Pronounciation, and English Translation. Respond in exact JSON format:
 
-Language: Arabic and English
-Prayer content must be about: "${p.content}. Add Allahumma or such if needed."
+Content of dua must be about: "${p.content}. Add Allahumma etc if needed."
 JSON format to follow:
 {
   "arabic": "اَللّٰهُمَّ",
-  "spelling": "Allahumma",
-  "meaning": "Ya Allah"
+  "pronounciation": "Allahumma",
+  "translation": "Ya Allah"
 }
 This is attempt number: ${p.iteration}
 `;
@@ -297,19 +306,18 @@ This is attempt number: ${p.iteration}
   }, [p.content, p.iteration]);
   return (
     <>
-      <DataChatGPTPrompt apikey={p.apikey} onDataLoaded={onDataLoaded} onFailure={p.onFailure} prompt={prompt} />
+      <FCDataOpenAICompletionGenerator apikey={p.apikey} onDataLoaded={handleDataLoaded} onFailure={p.onFailure} prompt={prompt} />
     </>
   );
 };
 
-type DataChatGPTPromptProps = {
+type PropsDataOpenAICompletionGenerator = {
   apikey: string;
   prompt?: string;
   onDataLoaded: (data: string) => void;
   onFailure: (message: string) => void;
 };
-
-const DataChatGPTPrompt: React.FC<DataChatGPTPromptProps> = (p) => {
+const FCDataOpenAICompletionGenerator: React.FC<PropsDataOpenAICompletionGenerator> = (p) => {
   React.useEffect(() => {
     if (!p.prompt) return;
 

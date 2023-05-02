@@ -8,7 +8,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import * as appconfig from "./AppConfig";
 // import { Footer } from "./components/BlockFooter";
 
-const { ScreenHome, ScreenFAQ, ScreenCraft } = lazily(() => import("./AppComponent"));
+const { FCScreenHome: ScreenHome, FCScreenFAQ: ScreenFAQ } = lazily(() => import("./AppComponent"));
 
 export function App() {
   // context, vars, and states
@@ -32,7 +32,6 @@ export function App() {
               <React.Suspense fallback={funcRenderLoader()}>
                 <Routes>
                   <Route path="/" element={<ScreenHome />} />
-                  <Route path="/craft" element={<ScreenCraft />} />
                   <Route path="/faqs" element={<ScreenFAQ />} />
                 </Routes>
               </React.Suspense>
