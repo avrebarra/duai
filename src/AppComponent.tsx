@@ -124,6 +124,7 @@ export const FCScreenHome: React.FC<PropsNone> = ({}) => {
             onClick={() => {
               setPrompt(tmpPrompt);
             }}
+            css=""
           >
             Make Dua
           </Button>
