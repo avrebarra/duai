@@ -331,7 +331,7 @@ const FCDataOpenAICompletionGenerator: React.FC<PropsDataOpenAICompletionGenerat
 
       try {
         const result = await openai.createCompletion({
-          model: "text-davinci-003",
+          model: "gpt-3.5-turbo-instruct",
           prompt: p.prompt,
           temperature: 0.5,
           max_tokens: 1000,
